@@ -7,7 +7,7 @@ INC_DIR := .
 LIBS = -lgmp
 CC = clang
 
-C_FILES = samplerz.c tables.c random.c
+C_FILES = samplerz.c tables.c random.c roots.c fft.c
 
 TEST ?= false
 
@@ -55,4 +55,4 @@ fclean: clean
 
 re: fclean $(NAME)
 
-.PHONY: all, clean, fclean, re, lib
+.PHONY: all, clean, fclean, re

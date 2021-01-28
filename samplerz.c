@@ -67,7 +67,7 @@ int SamplerZ(double mu, double sigma, double sigmin)
 	double x;
 	double dss = 1 / (2 * sigma * sigma);
 
-	int fd = open("/dev/urandom", O_RDONLY);
+	// int fd = open("/dev/urandom", O_RDONLY);
 	while (1)
 	{
 		z0 = BaseSampler();
@@ -78,5 +78,5 @@ int SamplerZ(double mu, double sigma, double sigmin)
 		if (BerExp(x, ccs))
 			return (z + (int)mu - (mu < 0));
 	}
-	close(fd);
+	// close(fd);
 }
