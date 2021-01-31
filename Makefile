@@ -7,7 +7,7 @@ INC_DIR := .
 LIBS = -lgmp
 CC = clang
 
-C_FILES = samplerz.c tables.c random.c roots.c fft.c
+C_FILES = samplerz.c tables.c random.c roots.c fft.c utils.c fft_op.c
 
 TEST ?= false
 
@@ -33,7 +33,7 @@ INC_FLAGS = $(addprefix -I ,$(INC_DIR))
 all: $(NAME)
 
 $(NAME): $(OBJ_DIR) $(OBJ)
-	@$(CC) -o $@ $(OBJ) $(LIBS) 
+	@$(CC) -o $@ $(OBJ) $(LIBS)
 	@echo "\n$(BLU)[$(NAME)]$(GRN) Compilation success$(RESET)"
 
 $(OBJ_DIR):
