@@ -1,6 +1,38 @@
 #include "ffsampling.h"
 
-static void init_matrix(t_pol_fft mat[2][2], int deg)
+void print_tree(t_tree *T)
+{
+        print_fft(T->value);
+        if (T->leftchild)
+        {
+        printf("\n[");
+        print_tree(T->leftchild);
+        print_tree(T->rightchild);
+        printf("]");
+        }
+}
+
+t_tree *new_node(t_pol_fft value)
+{
+    t_tree *new;
+    new = malloc(sizeof(t_tree));
+    new->value = dup_pol(value);
+    new->leftchild = NULL;
+    new->rightchild = NULL;
+    return (new);
+}
+
+t_pol_fft dup_pol(t_pol_fft f)
+{
+    t_pol_fft new;
+    new.len = f.len;
+    new.coeffs = malloc(sizeof(complex double) * new.len);
+    for (int i = 0; i < new.len; i++)
+        new.coeffs[i] = f.coeffs[i];
+    return (new);
+}
+
+void init_matrix(t_pol_fft mat[2][2], int deg)
 {
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++)
@@ -10,7 +42,7 @@ static void init_matrix(t_pol_fft mat[2][2], int deg)
         }
 }
 
-static void free_matix(t_pol_fft mat[2][2])
+void free_matrix(t_pol_fft mat[2][2])
 {
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++)
@@ -26,7 +58,7 @@ void    print_fft(t_pol_fft f)
     printf("(");
     for (int i = 0; i < f.len; i++)
     {
-        printf("%.5f%+.5fi", crealf(f.coeffs[i]), cimagf(f.coeffs[i]));
+        printf("%f%+fi", crealf(f.coeffs[i]), cimagf(f.coeffs[i]));
         if (i < f.len - 1)
             printf(", ");
     }
@@ -48,46 +80,4 @@ void    print_mat(t_pol_fft mat[2][2])
             printf("\n");
     }
     printf("]\n");
-}
-
-static void gram(t_pol_fft B[2][2], t_pol_fft G[2][2])
-{
-    t_pol_fft tmp1, tmp2;
-    t_pol_fft B_star[2][2];
-    tmp1.len = B[0][0].len;
-    tmp1.coeffs = malloc(sizeof(complex double) * tmp1.len);
-    tmp2.len = B[0][0].len;
-    tmp2.coeffs = malloc(sizeof(complex double) * tmp2.len);
-
-    init_matrix(B_star, B[0][0].len);
-    for(int i = 0; i < 2; i++)
-        for (int j = 0; j < 2; j++)
-            adj(&(B_star[i][j]), B[j][i]);
-
-    add(&(G[0][0]), mul(&tmp1, B[0][0], B_star[0][0]), mul(&tmp2, B[0][1], B_star[1][0]));
-    add(&(G[0][1]), mul(&tmp1, B[0][0], B_star[0][1]), mul(&tmp2, B[0][1], B_star[1][1]));
-    add(&(G[1][0]), mul(&tmp1, B[1][0], B_star[0][0]), mul(&tmp2, B[1][1], B_star[1][0]));
-    add(&(G[1][1]), mul(&tmp1, B[1][0], B_star[0][1]), mul(&tmp2, B[1][1], B_star[1][1]));
-    free(tmp1.coeffs);
-    free(tmp2.coeffs);
-    free_matix(B_star);
-}
-
-
-
-t_sk gen_sk(t_pol f, t_pol g, t_pol F, t_pol G)
-{
-    t_sk key;
-
-    key.basis[0][0] = fft(g);
-    key.basis[0][1] = fft(f);
-    for (int i = 0; i < key.basis[0][1].len; i++)
-        key.basis[0][1].coeffs[i] *= -1;
-    key.basis[1][0] = fft(G);
-    key.basis[1][1] = fft(F);
-    for (int i = 0; i < key.basis[1][1].len; i++)
-        key.basis[1][1].coeffs[i] *= -1;
-    init_matrix(key.gram, f.len);
-    gram(key.basis, key.gram);
-    return (key);
 }

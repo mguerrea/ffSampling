@@ -4,17 +4,18 @@ SRC_DIR := .
 OBJ_DIR := ./obj
 INC_DIR := .
 
-LIBS = -lgmp
+LIBS = -lgmp -lm
 CC = clang
 
-C_FILES = samplerz.c tables.c random.c roots.c fft.c utils.c fft_op.c
+C_FILES = samplerz.c tables.c random.c roots.c fft.c utils.c fft_op.c \
+	keygen.c params.c
 
 TEST ?= false
 
 ifeq ($(TEST), false)
 	C_FILES += main.c
 else
-	C_FILES += test.c
+	C_FILES += test.c KAT.c
 	C_FLAGS = -DTEST
 endif
 
