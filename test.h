@@ -17,6 +17,16 @@ struct sign_KAT
     double **G;
     double **s2;
     double **h;
+    char **seed;
+};
+
+struct sign2 {
+    double f[2];
+    double g[2];
+    double F[2];
+    double G[2];
+    double h[2];
+    char *seed;
 };
 
 

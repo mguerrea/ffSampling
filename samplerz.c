@@ -49,7 +49,7 @@ int BerExp(double x, double ccs)
 	int r = x - s * LN2;
 
 	s = MIN(s, 63);
-	uint64_t z = (2 * ApproxExp(x, ccs) - 1) >> s;
+	uint64_t z = (2 * ApproxExp(r, ccs) - 1) >> s;
 	int i = 64;
 	do {
 		i = i - 8;

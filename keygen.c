@@ -81,8 +81,10 @@ void normalize_tree(t_tree *T, double sigma)
     else
     {
         sqrt_fft(&(T->value), T->value);
-        for (int i = 0; i < T->value.len; i++)
-            T->value.coeffs[i] = sigma / T->value.coeffs[i];
+        T->value.coeffs[0] = sigma / T->value.coeffs[0];
+        T->value.coeffs[1] = 0;
+        // for (int i = 0; i < T->value.len; i++)
+        //     T->value.coeffs[i] = sigma / T->value.coeffs[i];
     }
 }
 

@@ -58,7 +58,12 @@ void    print_fft(t_pol_fft f)
     printf("(");
     for (int i = 0; i < f.len; i++)
     {
-        printf("%f%+fi", crealf(f.coeffs[i]), cimagf(f.coeffs[i]));
+        if (creal(f.coeffs[i]))
+            printf("%f", creal(f.coeffs[i]));
+        if (cimag(f.coeffs[i]))
+            printf("%+fi", cimag(f.coeffs[i]));
+        if (f.coeffs[i] == 0)
+            printf("0");
         if (i < f.len - 1)
             printf(", ");
     }

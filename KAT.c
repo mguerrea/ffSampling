@@ -13,6 +13,12 @@ const struct samplerZ_KAT samplerZ[] = {
     {-43.88754568839566, 1.6980782114808988, "3cbf6818a68f7ab9991514", -41}
 };
 
+struct sign2 sign2[] = {
+    {{72,-37}, {73, -4}, {-80, 11}, {65, 49}, {6577, 10251}, "de3857e7c28ca01e0ee29976852881bf73651b094cac6b74609c4e4b0f1a6910ff36f69f290b7bad542a9830c136406a73fff581b13620af"},
+    {{20, 59}, {75, 8}, {-88, 14}, {34, -83}, {823, 4231}, "de3857e7c28ca01e0ee29976852881bf73651b094cac6b74609c4e4b0f1a6910ff36f69f290b7bad542a9830c136406a73fff581b13620af"}
+};
+
+
 const double f_2[][2] = {
     {72, -37}, {20, 59}, {-86, -23}, {-30, -49}
 };
@@ -35,6 +41,10 @@ const double s2_2[][2] = {
 
 const double h_2[][2] = {
     {6577, 10251}, {823, 4231}, {8281, 265}, {6843, 10296}
+};
+
+const char *seed_2[] = {
+    "de3857e7c28ca01e0ee29976852881bf73651b094cac6b74609c4e4b0f1a6910ff36f69f290b7bad542a9830c136406a73fff581b13620af"
 };
 
 const double f_4[][4] = {
@@ -62,6 +72,6 @@ const double h_4[][4] = {
 };
 
 struct sign_KAT sign[] = {
-    {2, f_2, g_2, F_2, G_2, s2_2, h_2},
-    {4, f_4, g_4, F_4, G_4, s2_4, h_4}
-}
+    {2, (double **)f_2, (double **)g_2, (double **)F_2, (double **)G_2, (double **)s2_2, (double **)h_2, (char **)seed_2}
+    // {4, f_4, g_4, F_4, G_4, s2_4, h_4, seed_2}
+};

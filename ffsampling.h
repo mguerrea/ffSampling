@@ -15,12 +15,13 @@
 #define LN2 0.69314718056
 #define SIGMAX 1.8205
 #define INV_2SIGMA2 1 / (2 * (SIGMAX * SIGMAX))
+#define Q 12 * 1024 + 1
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 typedef struct polynomial {
     int len;
-    float *coeffs;
+    double *coeffs;
 }               t_pol;
 
 typedef struct polynomial_fft {
@@ -61,6 +62,8 @@ void free_matrix(t_pol_fft mat[2][2]);
 t_tree *new_node(t_pol_fft value);
 t_pol_fft dup_pol(t_pol_fft f);
 void print_tree(t_tree *T);
+
+t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params);
 
 /*
 ** fft_op.c
