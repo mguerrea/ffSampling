@@ -85,3 +85,41 @@ t_pol_fft fft(t_pol f)
     }
     return f_fft;
 }
+
+t_pol merge(t_pol f0, t_pol f1)
+{
+    t_pol f;
+    f.len = 2 *  f0.len;
+    f.coeffs = malloc(sizeof(double)*f.len);
+    for (int i = 0; i < f0.len; i++)
+    {
+        f.coeffs[2 * i] = f0.coeffs[i];
+        f.coeffs[2 * i + 1] = f1.coeffs[i];
+    }
+    return (f);
+}
+
+t_pol ifft(t_pol_fft f_fft)
+{
+    t_pol_fft f0_fft, f1_fft;
+    t_pol f, f0, f1; 
+    if (f_fft.len > 2)
+    {
+        split_fft(f_fft, &f0_fft, &f1_fft);
+        f0 = ifft(f0_fft);
+        free(f0_fft.coeffs);
+        f1 = ifft(f1_fft);
+        free(f1_fft.coeffs);
+        f = merge(f0, f1);
+        free(f0.coeffs);
+        free(f1.coeffs);
+    }
+    else if (f_fft.len == 2)
+    {
+        f.len = 2;
+        f.coeffs = malloc(sizeof(double) * f.len);
+        f.coeffs[0] = creal(f_fft.coeffs[0]);
+        f.coeffs[1] = cimag(f_fft.coeffs[0]);
+    }
+    return (f);
+}

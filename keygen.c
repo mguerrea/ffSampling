@@ -105,5 +105,6 @@ t_sk gen_sk(t_pol f, t_pol g, t_pol F, t_pol G, double sigma)
     gram(key.basis, gram_basis);
     key.T = ffLDL(gram_basis);
     normalize_tree(key.T, sigma);
+    key.h = div_zq(g, f);
     return (key);
 }

@@ -53,6 +53,16 @@ void free_matrix(t_pol_fft mat[2][2])
         }
 }
 
+t_pol_fft new_pol(int len)
+{
+    t_pol_fft new;
+    new.len = len;
+    new.coeffs = malloc(sizeof(complex double) * len);
+    for (int i = 0; i < len; i++)
+        new.coeffs[i] = 0;
+    return (new);
+}
+
 void    print_fft(t_pol_fft f)
 {
     printf("(");
@@ -85,4 +95,24 @@ void    print_mat(t_pol_fft mat[2][2])
             printf("\n");
     }
     printf("]\n");
+}
+
+void    vect_mat_mul(t_pol_fft res[2], t_pol_fft vect[2], t_pol_fft mat[2][2])
+{
+    t_pol_fft new[2];
+    t_pol_fft tmp1 = new_pol(vect[0].len);
+    t_pol_fft tmp2 = new_pol(vect[0].len);
+    new[0] = new_pol(vect[0].len);
+    new[1] = new_pol(vect[0].len);
+    add_fft(&(new[0]), mul_fft(&tmp1, vect[0], mat[0][0]), mul_fft(&tmp2, vect[1], mat[1][0]));
+    add_fft(&(new[1]), mul_fft(&tmp1, vect[0], mat[0][1]), mul_fft(&tmp2, vect[1], mat[1][1]));
+    free(tmp1.coeffs);
+    free(tmp2.coeffs);
+    for (int i = 0; i < new[0].len; i++)
+    {
+        res[0].coeffs[i] = new[0].coeffs[i];
+        res[1].coeffs[i] = new[1].coeffs[i];
+    }
+    free(new[0].coeffs);
+    free(new[1].coeffs);
 }

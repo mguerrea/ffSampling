@@ -7,8 +7,8 @@ INC_DIR := .
 LIBS = -lgmp -lm
 CC = clang
 
-C_FILES = samplerz.c tables.c random.c roots.c fft.c utils.c fft_op.c \
-	keygen.c params.c ffsampling.c
+C_FILES = samplerz.c tables.c random.c roots.c fft.c utils.c pol_op.c \
+	keygen.c params.c ffsampling.c ntt.c
 
 TEST ?= false
 

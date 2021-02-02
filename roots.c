@@ -2127,3 +2127,17 @@ complex double *roots[] = {phi4_roots, phi8_roots, phi16_roots, phi32_roots,
 //               512: phi1024_roots,
 //               1024: phi2048_roots
 //               }
+
+//Roots of phi_4 = x^2 + 1.
+int phi4_roots_Zq[] = {1479, 10810};
+//Roots of phi_8 = x^4 + 1
+int phi8_roots_Zq[] = {4043, 8246, 5146, 7143};
+//Roots of phi_16 = x^8 + 1
+int phi16_roots_Zq[] = {5736, 6553, 4134, 8155, 722, 11567, 1305, 10984};
+//Roots of phi_32 = x^16 + 1
+int phi32_roots_Zq[] = {1646, 10643, 1212, 11077, 5860, 6429, 3195, 9094, 2545, 9744, 3621, 8668, 3504, 8785, 3542, 8747};
+//Roots of phi_64 = x^32 + 1
+int phi64_roots_Zq[] = {4591, 7698, 5728, 6561, 5023, 7266, 5828, 6461, 4978, 7311, 1351, 10938, 3328, 8961, 5777, 6512, 2975, 9314, 563, 11726, 3006, 9283, 2744, 9545, 949, 11340, 2625, 9664, 4821, 7468, 2639, 9650};
+
+int *roots_Zq[] = {phi4_roots_Zq, phi8_roots_Zq, phi16_roots_Zq,
+    phi32_roots_Zq, phi64_roots_Zq};

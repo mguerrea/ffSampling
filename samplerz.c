@@ -45,8 +45,8 @@ int BerExp(double x, double ccs)
 {
 	unsigned char c;
 	int w;
-	int s = x / LN2;
-	int r = x - s * LN2;
+	int s = (x / LN2);
+	double r = x - (double)s * LN2;
 
 	s = MIN(s, 63);
 	uint64_t z = (2 * ApproxExp(r, ccs) - 1) >> s;
@@ -68,8 +68,10 @@ int SamplerZ(double mu, double sigma, double sigmin)
 	double dss = 1 / (2 * sigma * sigma);
 
 	// int fd = open("/dev/urandom", O_RDONLY);
+	int i = 0;
 	while (1)
 	{
+		i++;
 		z0 = BaseSampler();
 		random_bytes(1, (unsigned char *)&b);
 		b = b & 0x1;
