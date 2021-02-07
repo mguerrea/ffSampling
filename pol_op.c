@@ -43,7 +43,7 @@ t_pol_fft sqrt_fft(t_pol_fft *res, t_pol_fft f)
     return (*res);
 }
 
-t_pol div_ntt(t_pol *res, t_pol f, t_pol g)
+t_pol_ntt div_ntt(t_pol_ntt *res, t_pol_ntt f, t_pol_ntt g)
 {
     for (int i = 0; i < f.len; i++)
     {
@@ -53,7 +53,7 @@ t_pol div_ntt(t_pol *res, t_pol f, t_pol g)
     return (*res);
 }
 
-t_pol mul_ntt(t_pol *res, t_pol f, t_pol g)
+t_pol_ntt mul_ntt(t_pol_ntt *res, t_pol_ntt f, t_pol_ntt g)
 {
     for (int i = 0; i < f.len; i++)
     {
@@ -63,7 +63,7 @@ t_pol mul_ntt(t_pol *res, t_pol f, t_pol g)
     return (*res);
 }
 
-t_pol add_ntt(t_pol *res, t_pol f, t_pol g)
+t_pol_ntt add_ntt(t_pol_ntt *res, t_pol_ntt f, t_pol_ntt g)
 {
     for (int i = 0; i < f.len; i++)
     {
@@ -73,7 +73,7 @@ t_pol add_ntt(t_pol *res, t_pol f, t_pol g)
     return (*res);
 }
 
-t_pol sub_ntt(t_pol *res, t_pol f, t_pol g)
+t_pol_ntt sub_ntt(t_pol_ntt *res, t_pol_ntt f, t_pol_ntt g)
 {
     for (int i = 0; i < f.len; i++)
     {
@@ -86,7 +86,7 @@ t_pol sub_ntt(t_pol *res, t_pol f, t_pol g)
 t_pol div_zq(t_pol f, t_pol g)
 {
     t_pol res;
-    t_pol f_ntt, g_ntt;
+    t_pol_ntt f_ntt, g_ntt;
     f_ntt = ntt(f);
     g_ntt = ntt(g);
     div_ntt(&f_ntt, f_ntt, g_ntt);
@@ -99,7 +99,7 @@ t_pol div_zq(t_pol f, t_pol g)
 t_pol mul_zq(t_pol f, t_pol g)
 {
     t_pol res;
-    t_pol f_ntt, g_ntt;
+    t_pol_ntt f_ntt, g_ntt;
     f_ntt = ntt(f);
     g_ntt = ntt(g);
     mul_ntt(&f_ntt, f_ntt, g_ntt);
@@ -112,7 +112,7 @@ t_pol mul_zq(t_pol f, t_pol g)
 t_pol add_zq(t_pol f, t_pol g)
 {
     t_pol res;
-    t_pol f_ntt, g_ntt;
+    t_pol_ntt f_ntt, g_ntt;
     f_ntt = ntt(f);
     g_ntt = ntt(g);
     add_ntt(&f_ntt, f_ntt, g_ntt);
@@ -125,7 +125,7 @@ t_pol add_zq(t_pol f, t_pol g)
 t_pol sub_zq(t_pol f, t_pol g)
 {
     t_pol res;
-    t_pol f_ntt, g_ntt;
+    t_pol_ntt f_ntt, g_ntt;
     f_ntt = ntt(f);
     g_ntt = ntt(g);
     sub_ntt(&f_ntt, f_ntt, g_ntt);

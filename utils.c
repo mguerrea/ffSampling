@@ -116,3 +116,13 @@ void    vect_mat_mul(t_pol_fft res[2], t_pol_fft vect[2], t_pol_fft mat[2][2])
     free(new[0].coeffs);
     free(new[1].coeffs);
 }
+
+// int round(float nb)
+// {
+//     float dec = nb - (int)nb;
+//     if (dec >= -0.5 && dec <= 0.5)
+//         return ((int)nb);
+//     if (nb > 0)
+//         return((int)nb + 1);
+//     return ((int)nb - 1);
+// }

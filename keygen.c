@@ -36,6 +36,8 @@ t_tree *ffLDL(t_pol_fft G[2][2])
     {
         split_fft(D[0][0], &(G0[0][0]), &(G0[0][1]));
         split_fft(D[1][1], &(G1[0][0]), &(G1[0][1]));
+        G0[1][0] = new_pol(G0[0][1].len);
+        G1[1][0] = new_pol(G1[0][1].len);
         adj_fft(&(G0[1][0]), G0[0][1]);
         adj_fft(&(G1[1][0]), G1[0][1]);
         G0[1][1] = dup_pol(G0[0][0]);
@@ -83,8 +85,6 @@ void normalize_tree(t_tree *T, double sigma)
         sqrt_fft(&(T->value), T->value);
         T->value.coeffs[0] = sigma / T->value.coeffs[0];
         T->value.coeffs[1] = 0;
-        // for (int i = 0; i < T->value.len; i++)
-        //     T->value.coeffs[i] = sigma / T->value.coeffs[i];
     }
 }
 

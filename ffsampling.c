@@ -1,4 +1,5 @@
 #include "ffsampling.h"
+#include <math.h>
 
 /*
  * Computes the gaussian sampling of t over a lattice
@@ -20,7 +21,6 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
         z[1].coeffs[0] = SamplerZ(creal(t[1].coeffs[0]), sigma, params.sigmin);
         return(z);
     }
-
     t_pol_fft l = T->value;
     t_tree *T0 = T->leftchild, *T1 = T->rightchild;
     t_pol_fft t1[2], t0[2];
@@ -75,6 +75,9 @@ t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
         t[1].coeffs[i] = (-point_fft.coeffs[i] * b.coeffs[i]) / (Q);
     }
 
+    while (1)
+    {
+
     // ffSampling gives us a random point z on our lattice close to t
     t_pol_fft *z = ffSampling(t, key.T, params);
 
@@ -85,15 +88,21 @@ t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
 
     for (int i = 0; i < v[1].len; i++)
     {
-        s[0].coeffs[i] = message.coeffs[i] - s[0].coeffs[i];
-        s[1].coeffs[i] = -s[1].coeffs[i];
+        s[0].coeffs[i] = message.coeffs[i] - round(s[0].coeffs[i]);
+        s[1].coeffs[i] = -round(s[1].coeffs[i]);
     }
 
+    double norm = 0;
+    for (int i = 0; i < s[0].len; i++)
+        norm = norm + s[0].coeffs[i]*s[0].coeffs[i] + s[1].coeffs[i]*s[1].coeffs[i];
+    if (norm <= params.bound)
+        break;
+    }
+    
     // s is the distance between the message and the point z
     // s is short and we get s[0] + s[1] * h = point % q
     // we return s[1] which is the signature
-
-   return (s[1]);
+    return (s[1]);
 }
 
 /*

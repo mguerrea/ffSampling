@@ -31,6 +31,11 @@ typedef struct polynomial_fft {
 	int len;
 }                   t_pol_fft;
 
+typedef struct polynomial_ntt {
+	int *coeffs;
+	int len;
+}                   t_pol_ntt;
+
 typedef struct tree {
 	t_pol_fft value;
 	struct tree *leftchild;
@@ -58,8 +63,8 @@ t_pol_fft   fft(t_pol f);
 t_pol       ifft(t_pol_fft f_fft);
 void        split_fft(t_pol_fft f, t_pol_fft *f0, t_pol_fft *f1);
 t_pol_fft   merge_fft(t_pol_fft f0, t_pol_fft f1);
-t_pol       intt(t_pol f_ntt);
-t_pol		ntt(t_pol f);
+t_pol       intt(t_pol_ntt f_ntt);
+t_pol_ntt	ntt(t_pol f);
 
 t_sk gen_sk(t_pol f, t_pol g, t_pol F, t_pol G, double sigma);
 
@@ -82,6 +87,7 @@ t_pol merge(t_pol f0, t_pol f1);
 
 t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params);
 t_pol pseudo_sign(t_pol message, t_sk key, t_params params);
+int pseudo_verify(t_pol message, t_pol sig, t_pol h, t_params params);
 
 /*
 ** pol_op.c
@@ -97,5 +103,7 @@ t_pol		div_zq(t_pol f, t_pol g);
 t_pol		mul_zq(t_pol f, t_pol g);
 t_pol		add_zq(t_pol f, t_pol g);
 t_pol		sub_zq(t_pol f, t_pol g);
+
+// int round(float nb);
 
 #endif
