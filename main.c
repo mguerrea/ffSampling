@@ -4,9 +4,7 @@
 #define LEN 4
 
 extern t_params params[];
-
-double pol2[][2] = {{72, -37}, {73,-4}, {-80, 11}, {65, 49}};
-double pol4[][4] = {{-80, 39, 19, -15}, {12, 16, -9, -44}, {-2, -121, -5, 20}, {-75, -17, -15, -14}};
+extern double pol2[][2], pol4[][4], pol8[][8], pol16[][16], pol32[][32];
 
 t_pol gen_message(int n)
 {
@@ -28,18 +26,26 @@ int main(int argc, char **argv)
 		dim = atoi(argv[1]);
 	while (dim >>= 1)
 		n++;
-	dim = 1 << n;
-
+	dim = params[n - 1].n;
+	
+	t_pol f = {.len = dim}, g = {.len = dim}, F = {.len = dim}, G = {.len = dim};
 	if (dim == 2)
-	{
-		t_pol f = {2, pol2[0]}, g = {2, pol2[1]}, F = {2, pol2[2]}, G = {2, pol2[3]};
-		key = gen_sk(f, g, F, G, params[n - 1].sigma);
-	}
+		f.coeffs = pol2[0], g.coeffs = pol2[1], F.coeffs = pol2[2], G.coeffs = pol2[3];
+	else if (dim == 4)
+		f.coeffs = pol4[0], g.coeffs = pol4[1], F.coeffs = pol4[2], G.coeffs = pol4[3];
+	else if (dim == 8)
+		f.coeffs = pol8[0], g.coeffs = pol8[1], F.coeffs = pol8[2], G.coeffs = pol8[3];
+	else if (dim == 16)
+		f.coeffs = pol16[0], g.coeffs = pol16[1], F.coeffs = pol16[2], G.coeffs = pol16[3];
+	else if (dim == 32)
+		f.coeffs = pol32[0], g.coeffs = pol32[1], F.coeffs = pol32[2], G.coeffs = pol32[3];
 	else
 	{
-		t_pol f = {4, pol4[0]}, g = {4, pol4[1]}, F = {4, pol4[2]}, G = {4, pol4[3]};
-		key = gen_sk(f, g, F, G, params[n - 1].sigma);
+		printf("Dimension not supported\n");
+		printf("Supported dimensions are: 2, 4, 8, 16, 32\n");
+		return (1);
 	}
+	key = gen_sk(f, g, F, G, params[n - 1].sigma);
 
 	t_pol message = gen_message(dim);
 	printf("message = ");

@@ -100,7 +100,7 @@ t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
     }
     
     // s is the distance between the message and the point z
-    // s is short and we get s[0] + s[1] * h = point % q
+    // s is short and we get s[0] + s[1] * h = message % q
     // we return s[1] which is the signature
     return (s[1]);
 }

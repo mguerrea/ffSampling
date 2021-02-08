@@ -26,8 +26,8 @@ void split(t_pol f, t_pol *f0, t_pol *f1)
 {
     f0->len = f.len / 2;
     f1->len = f.len / 2;
-    f0->coeffs = malloc(sizeof(float)*f0->len);
-    f1->coeffs = malloc(sizeof(float)*f1->len);
+    f0->coeffs = malloc(sizeof(double)*f0->len);
+    f1->coeffs = malloc(sizeof(double)*f1->len);
     for (int i = 0; i < f0->len; i++)
     {
         f0->coeffs[i] = f.coeffs[2 * i];
@@ -64,7 +64,6 @@ t_pol_fft fft(t_pol f)
     if (n > 2)
     {
         split(f, &f0, &f1);
-     //   free(f.coeffs);
         f0_fft = fft(f0);
         free(f0.coeffs);
         f1_fft = fft(f1);
@@ -77,11 +76,8 @@ t_pol_fft fft(t_pol f)
     {
         f_fft.len = n;
         f_fft.coeffs = malloc(sizeof(complex double) * n);
-        for (int i = 0; i < n; i++)
-            f_fft.coeffs[i] = 0;
         f_fft.coeffs[0] = f.coeffs[0] + I * f.coeffs[1];
         f_fft.coeffs[1] = f.coeffs[0] - I * f.coeffs[1];
-        // free(f.coeffs);
     }
     return f_fft;
 }
