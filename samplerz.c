@@ -59,6 +59,12 @@ int BerExp(double x, double ccs)
 	return (w < 0);
 }
 
+/*
+ * Returns an integer following a Gaussian distribution
+ * @param mu the center of the Gaussian distribution
+ * @param sigma the standard deviation of the Gaussian distribution
+ * @param sigmin the minimum deviation of the Gaussian distribution
+*/
 int SamplerZ(double mu, double sigma, double sigmin)
 {
 	double r = mu - (int)mu + (mu < 0);
@@ -67,7 +73,6 @@ int SamplerZ(double mu, double sigma, double sigmin)
 	double x;
 	double dss = 1 / (2 * sigma * sigma);
 
-	// int fd = open("/dev/urandom", O_RDONLY);
 	int i = 0;
 	while (1)
 	{
@@ -80,5 +85,4 @@ int SamplerZ(double mu, double sigma, double sigmin)
 		if (BerExp(x, ccs))
 			return (z + (int)mu - (mu < 0));
 	}
-	// close(fd);
 }

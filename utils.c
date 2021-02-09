@@ -2,27 +2,27 @@
 
 void print_tree(t_tree *T)
 {
-        print_fft(T->value);
-        if (T->leftchild)
-        {
+    print_fft(T->value);
+    if (T->leftchild)
+    {
         printf("\n[");
         print_tree(T->leftchild);
         print_tree(T->rightchild);
         printf("]");
-        }
+    }
 }
 
 t_tree *new_node(t_pol_fft value)
 {
     t_tree *new;
     new = malloc(sizeof(t_tree));
-    new->value = dup_pol(value);
+    new->value = dup_fft(value);
     new->leftchild = NULL;
     new->rightchild = NULL;
     return (new);
 }
 
-t_pol_fft dup_pol(t_pol_fft f)
+t_pol_fft dup_fft(t_pol_fft f)
 {
     t_pol_fft new;
     new.len = f.len;
@@ -63,7 +63,7 @@ t_pol_fft new_pol(int len)
     return (new);
 }
 
-void    print_fft(t_pol_fft f)
+void print_fft(t_pol_fft f)
 {
     printf("(");
     for (int i = 0; i < f.len; i++)
@@ -80,7 +80,7 @@ void    print_fft(t_pol_fft f)
     printf(")");
 }
 
-void    print_mat(t_pol_fft mat[2][2])
+void print_mat(t_pol_fft mat[2][2])
 {
     printf("[");
     for (int i = 0; i < 2; i++)
@@ -97,7 +97,7 @@ void    print_mat(t_pol_fft mat[2][2])
     printf("]\n");
 }
 
-void    vect_mat_mul(t_pol_fft res[2], t_pol_fft vect[2], t_pol_fft mat[2][2])
+void vect_mat_mul(t_pol_fft res[2], t_pol_fft vect[2], t_pol_fft mat[2][2])
 {
     t_pol_fft new[2];
     t_pol_fft tmp1 = new_pol(vect[0].len);

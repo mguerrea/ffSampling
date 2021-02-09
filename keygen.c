@@ -40,8 +40,8 @@ t_tree *ffLDL(t_pol_fft G[2][2])
         G1[1][0] = new_pol(G1[0][1].len);
         adj_fft(&(G0[1][0]), G0[0][1]);
         adj_fft(&(G1[1][0]), G1[0][1]);
-        G0[1][1] = dup_pol(G0[0][0]);
-        G1[1][1] = dup_pol(G1[0][0]);
+        G0[1][1] = dup_fft(G0[0][0]);
+        G1[1][1] = dup_fft(G1[0][0]);
         T->leftchild = ffLDL(G0);
         T->rightchild= ffLDL(G1);
     }

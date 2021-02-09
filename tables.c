@@ -39,3 +39,9 @@ void init_RCDT()
     mpz_init_set_str(RCDT[17], "1", 10);
 	mpz_init_set_str(RCDT[18], "0", 10);
 }
+
+void free_RCDT()
+{
+    for (int i = 0; i < 19; i++)
+        mpz_clear(RCDT[i]);
+}

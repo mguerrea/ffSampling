@@ -1,6 +1,19 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include <assert.h>
+#include <time.h>
+#include <math.h>
+
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+
 struct samplerZ_KAT {
     double mu;
     double sigma;
@@ -8,27 +21,5 @@ struct samplerZ_KAT {
     char *randombytes;
     int z;
 };
-
-struct sign_KAT
-{
-    int n;
-    double **f;
-    double **g;
-    double **F;
-    double **G;
-    double **s2;
-    double **point;
-    char **seed;
-};
-
-struct sign2 {
-    double f[2];
-    double g[2];
-    double F[2];
-    double G[2];
-    double point[2];
-    char *seed;
-};
-
 
 #endif

@@ -6,15 +6,10 @@
 extern t_params params[];
 extern double pol2[][2], pol4[][4], pol8[][8], pol16[][16], pol32[][32];
 
-t_pol gen_message(int n)
+int usage(char **argv)
 {
-	t_pol m;
-	m.len = n;
-	m.coeffs = malloc(sizeof(double) * m.len);
-	srand(time(NULL));
-	for (int i = 0; i < n; i++)
-		m.coeffs[i] = rand() % Q;
-	return (m);
+	printf("Usage: %s [dim] [-s|-v] [message]\n", argv[0]);
+	return (1);
 }
 
 int main(int argc, char **argv)
@@ -22,12 +17,13 @@ int main(int argc, char **argv)
 	int dim = 2, n = 0;
 	t_sk key;
 
-	if (argc > 1)
-		dim = atoi(argv[1]);
+	if (argc < 4)
+		return (usage(argv));
+	dim = atoi(argv[1]);
 	while (dim >>= 1)
 		n++;
 	dim = params[n - 1].n;
-	
+
 	t_pol f = {.len = dim}, g = {.len = dim}, F = {.len = dim}, G = {.len = dim};
 	if (dim == 2)
 		f.coeffs = pol2[0], g.coeffs = pol2[1], F.coeffs = pol2[2], G.coeffs = pol2[3];
@@ -47,20 +43,27 @@ int main(int argc, char **argv)
 	}
 	key = gen_sk(f, g, F, G, params[n - 1].sigma);
 
-	t_pol message = gen_message(dim);
-	printf("message = ");
-	for (int i = 0; i < message.len; i++)
-		printf("%f\t", message.coeffs[i]);
-
-	t_pol sig = pseudo_sign(message, key, params[n - 1]);
-	printf("\nsignature = ");
-	for (int i = 0; i < sig.len; i++)
-		printf("%f\t", sig.coeffs[i]);
-
-	if (pseudo_verify(message, sig, key.h, params[n - 1]))
-		printf("\nsignature accepted\n");
-	else
-		printf("\nsignature too large\n");
+	if (strcmp(argv[2], "-s") == 0)
+	{
+		t_pol sig = pseudo_sign(argv[3], key, params[n - 1]);
+		FILE *out = fopen("message.sig", "w");
+		for (int i = 0; i < sig.len; i++)
+			fprintf(out, "%f\n", sig.coeffs[i]);
+		printf("message: %s\n", argv[3]);
+		printf("signature written to message.sig\n");
+	}
+	else if (strcmp(argv[2], "-v") == 0)
+	{
+		FILE *in = fopen("message.sig", "r");
+		t_pol sig = {.len = dim};
+		sig.coeffs = malloc(sizeof(double) * sig.len);
+		for (int i = 0; i < dim; i++)
+			fscanf(in, "%lf", &(sig.coeffs[i]));
+		if (pseudo_verify(argv[3], sig, key.h, params[n - 1]))
+			printf("signature accepted\n");
+		else
+			printf("signature too large\n");
+	}
 
 	return (0);
 }

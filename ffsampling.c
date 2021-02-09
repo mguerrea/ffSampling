@@ -1,6 +1,24 @@
 #include "ffsampling.h"
 #include <math.h>
 
+t_pol HashToPoint(char *message, int n)
+{
+	unsigned long hash = 5381;
+	char *str = message;
+    int c;
+	t_pol point = {.len = n};
+	point.coeffs = malloc(sizeof(double) * point.len);
+
+	for (int i = 0; i < n; i++)
+	{
+		str = message;
+    	while ((c = *str++))
+        	hash = (((hash << 5) + hash) + c) % Q;
+		point.coeffs[i] = hash;
+	}
+	return (point);
+}
+
 /*
  * Computes the gaussian sampling of t over a lattice
  * @param t a vector of two polynomials (FFT)
@@ -47,15 +65,16 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
 
 /*
  * Computes a pseudo signature to illustrate the use of ffSampling
- * @param message a polynomial (coefficients) representing the message to be signed
+ * @param message a string representing the message to be signed
  * @param key a secret key generated with gen_sk
  * @param params Falcon parameters, depens of the dimension
  * @return a polynomial (coefficients) representing a pseudo signature
 */
-t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
+t_pol pseudo_sign(char *message, t_sk key, t_params params)
 {
     init_RCDT();
-    t_pol_fft point_fft = fft(message);
+    t_pol point = HashToPoint(message, params.n);
+    t_pol_fft point_fft = fft(point);
     t_pol_fft a = key.basis[0][0];
     t_pol_fft b = key.basis[0][1];
     t_pol_fft c = key.basis[1][0];
@@ -88,7 +107,7 @@ t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
 
     for (int i = 0; i < v[1].len; i++)
     {
-        s[0].coeffs[i] = message.coeffs[i] - round(s[0].coeffs[i]);
+        s[0].coeffs[i] = point.coeffs[i] - round(s[0].coeffs[i]);
         s[1].coeffs[i] = -round(s[1].coeffs[i]);
     }
 
@@ -108,17 +127,18 @@ t_pol pseudo_sign(t_pol message, t_sk key, t_params params)
 /*
  * Verify the pseudo signature created by pseudo sign.
  * If the norm of the signature is too large then the signature is rejected.
- * @param message a polynomial (coefficients) representing the message which has bee signed
+ * @param message a string representing the message which has been signed
  * @param sig a polynomial (coefficients) representing the signature of the message
  * @param h the public key used to verify the signature (generated in gen_sk)
  * @param params Falcon parameters, depens of the dimension
  * @return 1 if the signature is valid, 0 otherwise
 */
-int pseudo_verify(t_pol message, t_pol sig, t_pol h, t_params params)
+int pseudo_verify(char *message, t_pol sig, t_pol h, t_params params)
 {
 	double norm = 0;
+    t_pol point = HashToPoint(message, params.n);
 	t_pol tmp = mul_zq(sig, h);
-	t_pol s1 = sub_zq(message, tmp);
+	t_pol s1 = sub_zq(point, tmp);
     // we normalize the s1 coefficients around q/2
 	for (int i = 0; i < s1.len; i++)
 		s1.coeffs[i] = ((int)s1.coeffs[i] + (Q >> 1)) % Q - (Q >> 1);
