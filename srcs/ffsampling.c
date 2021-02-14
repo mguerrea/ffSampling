@@ -1,6 +1,12 @@
 #include "ffsampling.h"
 #include <math.h>
 
+/*
+ * Map a string of arbitrary length to a point in the plane
+ * @param message a string of arbitrary length
+ * @param n the dimension of the ring
+ * @return a point represented by a polynomial (coefficients)
+*/
 t_pol HashToPoint(char *message, int n)
 {
 	unsigned long hash = 5381;
@@ -42,8 +48,8 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
     t_pol_fft l = T->value;
     t_tree *T0 = T->leftchild, *T1 = T->rightchild;
     t_pol_fft t1[2], t0[2];
-
     split_fft(t[1], &(t1[0]), &(t1[1]));
+    
     z1 = ffSampling(t1, T1, params);
     free(t1[0].coeffs);
     free(t1[1].coeffs);
@@ -55,6 +61,7 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
     add_fft(&t_prime, t_prime, t[0]);
     split_fft(t_prime, &(t0[0]), &(t0[1]));
     free(t_prime.coeffs);
+    
     z0 = ffSampling(t0, T0, params);
     free(t0[0].coeffs);
     free(t0[1].coeffs);

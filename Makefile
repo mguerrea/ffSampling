@@ -1,8 +1,8 @@
 NAME = ffsampling
 
-SRC_DIR := .
+SRC_DIR := srcs
 OBJ_DIR := ./obj
-INC_DIR := .
+INC_DIR := includes
 
 LIBS = -lgmp -lm
 CC = clang

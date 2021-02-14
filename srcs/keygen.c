@@ -50,6 +50,11 @@ t_tree *ffLDL(t_pol_fft G[2][2])
     return (T);
 }
 
+/*
+ * Computes the Gram matrix of a 2x2 matrix
+ * @param B a 2x2 matrix with polynomials coefficients (FFT)
+ * @param G a 2x2 matrix with polynomials coefficients (FFT)
+*/
 static void gram(t_pol_fft B[2][2], t_pol_fft G[2][2])
 {
     t_pol_fft tmp1, tmp2;
@@ -88,6 +93,15 @@ void normalize_tree(t_tree *T, double sigma)
     }
 }
 
+/*
+ * Generate a secret key based on 4 NTRU polynomials
+ * @param f a NTRU polynomial (coefficients)
+ * @param g a NTRU polynomial (coefficients)
+ * @param F a NTRU polynomial (coefficients)
+ * @param G a NTRU polynomial (coefficients)
+ * @param sigma the standard deviation
+ * @return a t_sk structure containing the secret key
+*/
 t_sk gen_sk(t_pol f, t_pol g, t_pol F, t_pol G, double sigma)
 {
     t_sk key;
