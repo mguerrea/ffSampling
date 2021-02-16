@@ -9,28 +9,28 @@
 */
 t_pol HashToPoint(char *message, int n)
 {
-	unsigned long hash = 5381;
-	char *str = message;
+    unsigned long hash = 5381;
+    char *str = message;
     int c;
-	t_pol point = {.len = n};
-	point.coeffs = malloc(sizeof(double) * point.len);
+    t_pol point = {.len = n};
+    point.coeffs = malloc(sizeof(double) * point.len);
 
-	for (int i = 0; i < n; i++)
-	{
-		str = message;
-    	while ((c = *str++))
-        	hash = (((hash << 5) + hash) + c) % Q;
-		point.coeffs[i] = hash;
-	}
-	return (point);
+    for (int i = 0; i < n; i++)
+    {
+        str = message;
+        while ((c = *str++))
+            hash = (((hash << 5) + hash) + c) % Q;
+        point.coeffs[i] = hash;
+    }
+    return (point);
 }
 
 /*
- * Computes the gaussian sampling of t over a lattice
+ * Computes the Gaussian sampling of t over a lattice
  * @param t a vector of two polynomials (FFT)
  * @param T a Falcon tree computed during key generation
  * @param params Falcon parameters, depens of the dimension
- * @return a vector of two polynomials (FFF)
+ * @return a vector of two polynomials (FFT)
 */
 t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
 {
@@ -43,17 +43,20 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
         z[0].coeffs[0] = SamplerZ(creal(t[0].coeffs[0]), sigma, params.sigmin);
         z[1] = new_pol(1);
         z[1].coeffs[0] = SamplerZ(creal(t[1].coeffs[0]), sigma, params.sigmin);
-        return(z);
+        return (z);
     }
     t_pol_fft l = T->value;
     t_tree *T0 = T->leftchild, *T1 = T->rightchild;
     t_pol_fft t1[2], t0[2];
     split_fft(t[1], &(t1[0]), &(t1[1]));
-    
+
     z1 = ffSampling(t1, T1, params);
     free(t1[0].coeffs);
     free(t1[1].coeffs);
     z[1] = merge_fft(z1[0], z1[1]);
+    free(z1[0].coeffs);
+    free(z1[1].coeffs);
+    free(z1);
 
     t_pol_fft t_prime = new_pol(t[0].len);
     sub_fft(&t_prime, t[1], z[1]);
@@ -61,11 +64,14 @@ t_pol_fft *ffSampling(t_pol_fft t[2], t_tree *T, t_params params)
     add_fft(&t_prime, t_prime, t[0]);
     split_fft(t_prime, &(t0[0]), &(t0[1]));
     free(t_prime.coeffs);
-    
+
     z0 = ffSampling(t0, T0, params);
     free(t0[0].coeffs);
     free(t0[1].coeffs);
     z[0] = merge_fft(z0[0], z0[1]);
+    free(z0[0].coeffs);
+    free(z0[1].coeffs);
+    free(z0);
 
     return (z);
 }
@@ -104,27 +110,40 @@ t_pol pseudo_sign(char *message, t_sk key, t_params params)
     while (1)
     {
 
-    // ffSampling gives us a random point z on our lattice close to t
-    t_pol_fft *z = ffSampling(t, key.T, params);
+        // ffSampling gives us a random point z on our lattice close to t
+        t_pol_fft *z = ffSampling(t, key.T, params);
 
-    vect_mat_mul(v, z, key.basis);
+        vect_mat_mul(v, z, key.basis);
 
-    s[0] = ifft(v[0]);
-    s[1] = ifft(v[1]);
+        s[0] = ifft(v[0]);
+        s[1] = ifft(v[1]);
+        free(z[0].coeffs);
+        free(z[1].coeffs);
+        free(z);
 
-    for (int i = 0; i < v[1].len; i++)
-    {
-        s[0].coeffs[i] = point.coeffs[i] - round(s[0].coeffs[i]);
-        s[1].coeffs[i] = -round(s[1].coeffs[i]);
+        for (int i = 0; i < s[1].len; i++)
+        {
+            s[0].coeffs[i] = point.coeffs[i] - round(s[0].coeffs[i]);
+            s[1].coeffs[i] = -round(s[1].coeffs[i]);
+        }
+
+        double norm = 0;
+        for (int i = 0; i < s[0].len; i++)
+            norm = norm + s[0].coeffs[i] * s[0].coeffs[i] + s[1].coeffs[i] * s[1].coeffs[i];
+        free(s[0].coeffs);
+        if (norm <= params.bound)
+            break;
+        else
+            free(s[1].coeffs);
     }
 
-    double norm = 0;
-    for (int i = 0; i < s[0].len; i++)
-        norm = norm + s[0].coeffs[i]*s[0].coeffs[i] + s[1].coeffs[i]*s[1].coeffs[i];
-    if (norm <= params.bound)
-        break;
-    }
-    
+    free_RCDT();
+    free(t[0].coeffs);
+    free(t[1].coeffs);
+    free(v[0].coeffs);
+    free(v[1].coeffs);
+    free(point.coeffs);
+    free(point_fft.coeffs);
     // s is the distance between the message and the point z
     // s is short and we get s[0] + s[1] * h = message % q
     // we return s[1] which is the signature
@@ -142,20 +161,24 @@ t_pol pseudo_sign(char *message, t_sk key, t_params params)
 */
 int pseudo_verify(char *message, t_pol sig, t_pol h, t_params params)
 {
-	double norm = 0;
+    double norm = 0;
     t_pol point = HashToPoint(message, params.n);
-	t_pol tmp = mul_zq(sig, h);
-	t_pol s1 = sub_zq(point, tmp);
+    t_pol tmp = mul_zq(sig, h);
+    t_pol s1 = sub_zq(point, tmp);
+
+    free(point.coeffs);
+    free(tmp.coeffs);
     // we normalize the s1 coefficients around q/2
-	for (int i = 0; i < s1.len; i++)
-		s1.coeffs[i] = ((int)s1.coeffs[i] + (Q >> 1)) % Q - (Q >> 1);
-	// we compute the norm of the signature
     for (int i = 0; i < s1.len; i++)
-	{
-		norm += sig.coeffs[i]*sig.coeffs[i];
-		norm += s1.coeffs[i]*s1.coeffs[i];
-	}
-	if (norm <= params.bound)
-		return (1);
-	return (0);
+        s1.coeffs[i] = ((int)s1.coeffs[i] + (Q >> 1)) % Q - (Q >> 1);
+    // we compute the norm of the signature
+    for (int i = 0; i < s1.len; i++)
+    {
+        norm += sig.coeffs[i] * sig.coeffs[i];
+        norm += s1.coeffs[i] * s1.coeffs[i];
+    }
+    free(s1.coeffs);
+    if (norm <= params.bound)
+        return (1);
+    return (0);
 }

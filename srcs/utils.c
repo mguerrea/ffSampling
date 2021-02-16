@@ -117,12 +117,19 @@ void vect_mat_mul(t_pol_fft res[2], t_pol_fft vect[2], t_pol_fft mat[2][2])
     free(new[1].coeffs);
 }
 
-// int round(float nb)
-// {
-//     float dec = nb - (int)nb;
-//     if (dec >= -0.5 && dec <= 0.5)
-//         return ((int)nb);
-//     if (nb > 0)
-//         return((int)nb + 1);
-//     return ((int)nb - 1);
-// }
+void free_tree(t_tree *T)
+{
+    if (T->leftchild)
+        free_tree(T->leftchild);
+    if (T->rightchild)
+        free_tree(T->rightchild);
+    free(T->value.coeffs);
+    free(T);
+}
+
+void free_sk(t_sk sk)
+{
+    free_matrix(sk.basis);
+    free(sk.h.coeffs);
+    free_tree(sk.T);
+}

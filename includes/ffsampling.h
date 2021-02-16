@@ -111,6 +111,7 @@ void	free_matrix(t_pol_fft mat[2][2]);
 void    print_fft(t_pol_fft f);
 void    print_mat(t_pol_fft mat[2][2]);
 void	print_tree(t_tree *T);
+void	free_sk(t_sk sk);
 
 t_tree		*new_node(t_pol_fft value);
 t_pol_fft	dup_fft(t_pol_fft f);
