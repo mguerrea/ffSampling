@@ -35,24 +35,24 @@ all: $(NAME)
 
 $(NAME): $(OBJ_DIR) $(OBJ)
 	@$(CC) -o $@ $(OBJ) $(LIBS)
-	@echo "\n$(BLU)[$(NAME)]$(GRN) Compilation success$(RESET)"
+	@echo "[$(NAME)] Compilation success"
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC)
-	$(CC) -c $< -o $@ $(INC_FLAGS) $(C_FLAGS)
-	@echo "\r$(ERASE)$(BLU)[$(NAME)]$(RESET) $@ created\c"
+	@$(CC) -c $< -o $@ $(INC_FLAGS) $(C_FLAGS)
+	@echo "[$(NAME)] $@ created"
 
 clean:
 	@/bin/rm -rf $(OBJ)
 	@/bin/rm -rf $(OBJ_DIR)
-	@echo "$(BLU)[$(NAME)]$(RED) .o files deleted$()$(RESET)"
+	@echo "[$(NAME)] .o files deleted$()$(RESET)"
 
 fclean: clean
 	@/bin/rm -f $(NAME)
 	@/bin/rm -f $(LINKNAME)
-	@echo  "$(BLU)[$(NAME)]$(RED) executable file deleted$(RESET)"
+	@echo  "[$(NAME)] executable file deleted$(RESET)"
 
 re: fclean $(NAME)
 
