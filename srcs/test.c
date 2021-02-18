@@ -17,6 +17,7 @@ void test_samplerZ()
         printf(KBLU "%12f\t|%12f\t|%12f\t|%5d", samplerZ[i].mu, samplerZ[i].sigma, samplerZ[i].sigmin, samplerZ[i].z);
         seed = samplerZ[i].randombytes;
         z = SamplerZ(samplerZ[i].mu, samplerZ[i].sigma, samplerZ[i].sigmin);
+        // verify that the z returned by the SamplerZ is the same as the z in KAT
         assert(samplerZ[i].z == z);
         printf(KGRN "\tOK\n");
     }

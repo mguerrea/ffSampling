@@ -1,7 +1,4 @@
 #include "ffsampling.h"
-#include <time.h>
-
-#define LEN 4
 
 extern t_params params[];
 extern double pol2[][2], pol4[][4], pol8[][8], pol16[][16], pol32[][32],
@@ -48,6 +45,7 @@ int main(int argc, char **argv)
 	}
 	key = gen_sk(f, g, F, G, params[n - 1].sigma);
 
+	// sign mode
 	if (strcmp(argv[2], "-s") == 0)
 	{
 		t_pol sig = pseudo_sign(argv[3], key, params[n - 1]);
@@ -61,6 +59,8 @@ int main(int argc, char **argv)
 		fclose(out);
 		free(sig.coeffs);
 	}
+
+	// verify mode
 	else if (strcmp(argv[2], "-v") == 0)
 	{
 		FILE *in = fopen("message.sig", "r");
