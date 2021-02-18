@@ -16,4 +16,4 @@
 
 -v: verifies signature of message
 
-Private keys are harcoded because the only purpose of this program is to provide a demonstration for the ffSampling algorithm.
+Private keys are hardcoded because the only purpose of this program is to provide a demonstration for the ffSampling algorithm.
